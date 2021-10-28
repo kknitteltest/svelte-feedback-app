@@ -39,7 +39,7 @@
     }
 
     button:disabled:hover {
-        transform: scale(0.98);
+        transform: scale(0.5);
         opacity: 0.9;
     }
 </style>

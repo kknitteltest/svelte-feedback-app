@@ -123,7 +123,6 @@
         <label for="num10">10</label>
     </li>
 </ul>
-Rating Select
 
 <style>
     .rating {

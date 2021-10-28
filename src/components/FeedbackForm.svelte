@@ -1,7 +1,11 @@
 <script>
+    import { v4 as uuidv4 } from "uuid";
+    import { createEventDispatcher } from "svelte";
     import Card from "./Card.svelte";
     import Button from "./Button.svelte";
     import RatingSelect from "./RatingSelect.svelte";
+
+    const dispatch = createEventDispatcher();
 
     let text = "";
     let rating = 10;
@@ -17,13 +21,21 @@
             btnDisabled = true;
         } else {
             message = null;
-            btnDisable = false;
+            btnDisabled = false;
         }
     };
 
     const handleSubmit = () => {
-        if(text.trim().length > min)
-    }
+        if (text.trim().length > min) {
+            const newFeedback = {
+                id: uuidv4(),
+                text,
+                rating: +rating,
+            };
+
+            dispatch("add-feedback", newFeedback);
+        }
+    };
 </script>
 
 <Card>
