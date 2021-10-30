@@ -8,14 +8,14 @@
     let text = "";
     let rating = 10;
     let btnDisabled = true;
-    let min = 10;
+    let min = 3;
     let message;
 
     const handleSelect = (e) => (rating = e.detail);
 
     const handleInput = () => {
-        if (text.trim().length <= min) {
-            message = `Text must be at least ${min} charactors`;
+        if (text.trim().length < min) {
+            message = `Text must be more than ${min} charactors`;
             btnDisabled = true;
         } else {
             message = null;
@@ -50,7 +50,7 @@
                 type="text"
                 on:input={handleInput}
                 bind:value={text}
-                placeholder="Tell us something that keeps you coming back"
+                placeholder="Please enter a comment."
             />
 
             <Button disabled={btnDisabled} type="submit">Send</Button>
