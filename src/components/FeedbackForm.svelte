@@ -1,77 +1,97 @@
 <script>
-    import { v4 as uuidv4 } from "uuid";
-    import { FeedbackStore } from "../stores";
-    import Card from "./Card.svelte";
-    import Button from "./Button.svelte";
-    import RatingSelect from "./RatingSelect.svelte";
+  import { v4 as uuidv4 } from "uuid";
+  import { FeedbackStore } from "../stores";
+  import Card from "./Card.svelte";
+  import Button from "./Button.svelte";
+  import RatingSelect from "./RatingSelect.svelte";
 
-    let text = "";
-    let rating = 10;
-    let btnDisabled = true;
-    let min = 3;
-    let message;
+  let text = "";
+  let rating = 10;
+  let btnDisabled = true;
+  let min = 3;
+  let message;
+  let id = "";
 
-    const handleSelect = (e) => (rating = e.detail);
+  const handleSelect = (e) => (rating = e.detail);
 
-    const handleInput = () => {
-        if (text.trim().length < min) {
-            message = `Text must be more than ${min} charactors`;
-            btnDisabled = true;
-        } else {
-            message = null;
-            btnDisabled = false;
+  const handleInput = () => {
+    if (text.trim().length < min) {
+      message = `Text must be more than ${min} charactors`;
+      btnDisabled = true;
+    } else {
+      message = null;
+      btnDisabled = false;
+    }
+  };
+
+  const handleSubmit = () => {
+    // if (text.trim().length > min) {
+    //   const newFeedback = {
+    //     id: uuidv4(),
+    //     text: text,
+    //     rating: +rating,
+    //   };
+
+    //   FeedbackStore.update((currentFeedback) => {
+    //     return [newFeedback, ...currentFeedback];
+    //   });
+    // }
+
+    const Feedback = Moralis.Object.extend("Feedback");
+    const feedback = new Feedback();
+    id = uuidv4();
+    console.log(text, rating, id, feedback);
+    feedback
+      .save({
+        uuidv4: id,
+        comment: text,
+        rating: rating,
+      })
+      .then(
+        (feedback) => {
+          console.log("save was a success");
+        },
+        (error) => {
+          console.log("failed to save ");
         }
-    };
-
-    const handleSubmit = () => {
-        if (text.trim().length > min) {
-            const newFeedback = {
-                id: uuidv4(),
-                text,
-                rating: +rating,
-            };
-
-            FeedbackStore.update((currentFeedback) => {
-                return [newFeedback, ...currentFeedback];
-            });
-            text = "";
-        }
-    };
+      );
+    text = "";
+  };
 </script>
 
 <Card>
-    <header>
-        <h2>How would you rate your service with us?</h2>
-    </header>
-    <form on:submit|preventDefault={handleSubmit}>
-        <RatingSelect on:rating-select={handleSelect} />
-        <div class="input-group">
-            <input
-                type="text"
-                on:input={handleInput}
-                bind:value={text}
-                placeholder="Please enter a comment."
-            />
+  <header>
+    <h2>How would you rate your service with us?</h2>
+  </header>
+  <form on:submit|preventDefault={handleSubmit}>
+    <RatingSelect on:rating-select={handleSelect} />
+    <div class="input-group">
+      <input
+        type="text"
+        on:input={handleInput}
+        bind:value={text}
+        placeholder="Please enter a comment."
+      />
 
-            <Button disabled={btnDisabled} type="submit">Send</Button>
+      <Button disabled={btnDisabled} type="submit">Send</Button>
+    </div>
+    <div>
+      {#if message}
+        <div class="message">
+          {message}
         </div>
-        <div>
-            {#if message}
-                <div class="message">
-                    {message}
-                </div>
-            {/if}
-        </div>
-    </form>
+      {/if}
+    </div>
+  </form>
 </Card>
 
 <style>
-    header {
-        max-width: 499px;
-        margin: auto;
-    }
+  header {
+    max-width: 499px;
+    margin: auto;
+  }
 
-    header h2 {
-        font-size: 22px;
-    }
+  header h2 {
+    font-size: 22px;
+  }
 </style>
