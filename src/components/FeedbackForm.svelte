@@ -45,7 +45,7 @@
       .save({
         uuidv4: id,
         comment: text,
-        rating: rating,
+        rating: +rating,
       })
       .then(
         (feedback) => {
